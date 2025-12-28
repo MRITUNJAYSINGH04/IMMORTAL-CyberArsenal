@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMMORTAL // CYBER_ARSENAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Deep Void Black with Cyber-Yellow (Immortal Brand), Neon-Cyan, and Plasma-Pink accents -->
+    <!-- Application Structure Plan: 
+         - Architecture: Domain-specific categorization (Windows, Cloud, Mobile, etc.).
+         - Branding: "IMMORTAL" prefix integrated into header and titles.
+         - Footer: Added social uplink to Instagram.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#030305',
+                        panel: '#0d0d14',
+                        cyan: '#00f0ff',
+                        pink: '#ff003c',
+                        yellow: '#fcee0a', // Immortal Brand Color
+                        green: '#4af626',
+                        dim: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 10px rgba(0, 240, 255, 0.5)',
+                        'glow-pink': '0 0 10px rgba(255, 0, 60, 0.5)',
+                        'glow-yellow': '0 0 15px rgba(252, 238, 10, 0.6)',
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030305;
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+
+        /* CRT Grid Background */
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #0d0d14; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #1e1e2e; 
+            border: 1px solid #00f0ff;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff; 
+        }
+
+        /* Tool Card */
+        .tool-card {
+            background: rgba(13, 13, 20, 0.8);
+            border: 1px solid #333;
+            position: relative;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .tool-card:hover {
+            border-color: #fcee0a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 rgba(252, 238, 10, 0.4);
+            background: rgba(20, 20, 30, 0.9);
+        }
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 20px 20px 0;
+            border-color: transparent #333 transparent transparent;
+            transition: border-color 0.2s;
+        }
+        .tool-card:hover::after {
+            border-color: transparent #fcee0a transparent transparent;
+        }
+
+        /* Glitch Text */
+        .glitch-text:hover {
+            text-shadow: 2px 0 #ff003c, -2px 0 #00f0ff;
+        }
+
+        /* Buttons */
+        .btn-cyber {
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: all 0.2s;
+        }
+        .btn-cyber:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-insta {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+            background-size: 200% 200%;
+            animation: gradient-anim 5s ease infinite;
+            color: white;
+        }
+        @keyframes gradient-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col font-sans selection:bg-pink selection:text-white">
+    <div class="grid-bg"></div>
+
+    <!-- Header -->
+    <header class="h-16 bg-panel/90 border-b border-gray-800 flex items-center justify-between px-6 z-20 backdrop-blur-md shadow-glow-yellow">
+        <div class="flex items-center gap-4">
+            <!-- Branding Logo -->
+            <div class="w-10 h-10 bg-yellow text-black font-bold flex items-center justify-center font-mono text-2xl shadow-glow-yellow border border-white">
+                IM
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-widest text-white uppercase glitch-text cursor-default">
+                    <span class="text-yellow drop-shadow-[0_0_5px_rgba(252,238,10,0.8)]">IMMORTAL</span> Cyber<span class="text-cyan">Arsenal</span>
+                </h1>
+                <div class="flex gap-2 text-[10px] font-mono text-gray-400">
+                    <span>SYS_ADMIN: <span class="text-yellow">IMMORTAL</span></span>
+                    <span class="text-gray-600">//</span>
+                    <span>STATUS: <span class="text-green animate-pulse">ONLINE</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="hidden md:block text-right">
+                <div class="text-[10px] text-gray-500 font-mono">CURRENT_DOMAIN</div>
+                <div id="header-category" class="text-cyan font-bold tracking-wider uppercase">ALL_SYSTEMS</div>
+            </div>
+            <button onclick="app.reset()" class="btn-cyber bg-pink/10 border border-pink text-pink px-4 py-2 text-xs font-mono hover:bg-pink hover:text-black hover:shadow-glow-pink transition-all">
+                RESET_SYSTEM
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative z-10">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-72 bg-void/90 border-r border-gray-800 flex flex-col hidden md:flex backdrop-blur-md z-20">
+            <div class="p-3 bg-panel border-b border-gray-800">
+                <input type="text" id="search-input" placeholder="SEARCH_DATABASE..." 
+                    class="w-full bg-black border border-gray-700 text-cyan px-3 py-2 font-mono text-xs focus:border-cyan focus:outline-none placeholder-gray-600 transition-colors focus:shadow-glow-cyan">
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto py-2 custom-scroll">
+                <div class="px-4 py-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-800 mb-2">Target Sectors</div>
+                <div id="domain-list" class="space-y-1 px-2">
+                    <!-- Domains Injected Here -->
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-gray-800 bg-panel flex flex-col gap-4">
+                <div class="chart-wrapper">
+                    <canvas id="distChart"></canvas>
+                </div>
+                
+                <!-- Instagram Link (Sidebar) -->
+                <a href="https://www.instagram.com/myself_immortal/" target="_blank" class="btn-cyber btn-insta w-full py-3 flex items-center justify-center gap-2 group hover:scale-105 transition-transform shadow-[0_0_15px_rgba(220,39,67,0.4)]">
+                    <span class="text-lg font-bold">@myself_immortal</span>
+                    <span class="text-[10px] uppercase font-mono tracking-widest opacity-80 group-hover:opacity-100">Establish Link</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col relative bg-void/50">
+            
+            <!-- Mobile Search / Controls -->
+            <div class="p-4 md:hidden border-b border-gray-800 bg-panel">
+                 <input type="text" id="mobile-search" placeholder="SEARCH_DATABASE..." 
+                    class="w-full bg-black border border-gray-700 text-white px-3 py-2 font-mono text-sm focus:border-cyan outline-none mb-3">
+                 <!-- Mobile Insta Button -->
+                 <a href="https://www.instagram.com/myself_immortal/" target="_blank" class="btn-cyber btn-insta w-full py-2 text-center block text-xs font-bold tracking-widest uppercase shadow-md">
+                    Connect: @myself_immortal
+                 </a>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="h-10 border-b border-gray-800 flex items-center justify-between px-6 bg-black/40">
+                <div class="text-xs font-mono text-gray-400">
+                    <span id="tool-count" class="text-white font-bold">0</span> ASSETS LOADED
+                </div>
+                <select id="sort-select" class="bg-transparent border-none text-gray-400 text-[10px] uppercase font-mono focus:text-cyan outline-none cursor-pointer hover:text-white">
+                    <option value="name">SORT: NAME (A-Z)</option>
+                    <option value="category">SORT: CATEGORY</option>
+                </select>
+            </div>
+
+            <!-- Tool Grid -->
+            <div id="tool-grid" class="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 custom-scroll content-start pb-20">
+                <!-- Cards Injected Here -->
+            </div>
+            
+            <!-- Mobile Footer (Copyright/Brand) -->
+            <div class="md:hidden py-4 text-center border-t border-gray-800 bg-black/80 text-[10px] text-gray-600 font-mono">
+                IMMORTAL CYBER_ARSENAL // V4.0
+            </div>
+            
+        </main>
+
+        <!-- Detail Drawer -->
+        <aside id="detail-drawer" class="absolute inset-y-0 right-0 w-full md:w-[500px] bg-panel border-l border-cyan transform translate-x-full transition-transform duration-300 z-50 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col backdrop-blur-xl">
+            
+            <!-- Header -->
+            <div class="h-1 bg-gradient-to-r from-yellow via-cyan to-pink"></div>
+            <div class="p-6 border-b border-gray-800 flex justify-between items-start bg-black/60">
+                <div>
+                    <div id="detail-cat-badge" class="inline-block px-2 py-0.5 bg-cyan/10 border border-cyan text-cyan text-[10px] font-bold uppercase tracking-widest mb-2 shadow-glow-cyan">
+                        CATEGORY
+                    </div>
+                    <h2 id="detail-title" class="text-3xl font-bold text-white uppercase tracking-tight drop-shadow-md">TOOL_NAME</h2>
+                </div>
+                <button onclick="app.closeDetail()" class="text-gray-500 hover:text-white transition-colors p-2 hover:bg-white/10 rounded">
+                    <span class="font-mono text-xl">X</span>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scroll bg-gradient-to-b from-transparent to-black/50">
+                
+                <!-- Primary Action -->
+                <a id="detail-link" href="#" target="_blank" class="btn-cyber block w-full bg-yellow/10 border border-yellow text-yellow hover:bg-yellow hover:text-black py-4 text-center group transition-all shadow-[0_0_20px_rgba(252,238,10,0.1)] hover:shadow-[0_0_30px_rgba(252,238,10,0.4)]">
+                    <span class="font-mono text-lg font-bold tracking-widest block group-hover:scale-105 transition-transform">ACCESS_TOOL_SYSTEM</span>
+                    <span class="text-[10px] opacity-70 group-hover:opacity-100">EXTERNAL_LINK // REDIRECT_PROTOCOL</span>
+                </a>
+
+                <!-- Description -->
+                <div>
+                    <h3 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <span class="w-1 h-1 bg-pink rounded-full"></span> System Description
+                    </h3>
+                    <p id="detail-desc" class="text-gray-300 font-mono text-sm leading-relaxed border-l-2 border-gray-700 pl-4 py-1"></p>
+                </div>
+
+                <!-- Mechanics -->
+                <div class="bg-black/50 p-4 border border-gray-800 rounded relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-1">
+                        <div class="w-10 h-10 border-t border-r border-cyan/30 rounded-tr-xl"></div>
+                    </div>
+                    <h3 class="text-cyan text-xs font-bold uppercase tracking-widest mb-2">>> Operational_Logic</h3>
+                    <p id="detail-mech" class="text-xs text-gray-400 font-mono leading-relaxed"></p>
+                </div>
+
+                <!-- Tags / Context -->
+                <div>
+                    <h3 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Environment & Keywords</h3>
+                    <div id="detail-tags" class="flex flex-wrap gap-2"></div>
+                </div>
+
+            </div>
+
+            <div class="p-4 bg-black text-center border-t border-gray-800">
+                <a href="https://www.instagram.com/myself_immortal/" target="_blank" class="text-[10px] text-yellow font-mono hover:underline hover:text-white transition-colors">
+                    POWERED BY IMMORTAL // @myself_immortal
+                </a>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Data & Application Logic -->
+    <script>
+        // --- DATA STORE ---
+        // Format: "Name|Description|URL"
+        
+        const db = {
+            "Windows Ecosystem": [
+                "Sysinternals Suite|The definitive suite of system troubleshooting tools for Windows.|https://docs.microsoft.com/en-us/sysinternals/",
+                "Mimikatz|Extracts plaintexts passwords, hash, PIN code and kerberos tickets from memory.|https://github.com/gentilkiwi/mimikatz",
+                "BloodHound|Visualizes active directory trust relationships.|https://github.com/BloodHoundAD/BloodHound",
+                "Rubeus|C# toolset for raw Kerberos interaction and abuses.|https://github.com/GhostPack/Rubeus",
+                "SharpHound|C# Data collector for BloodHound.|https://github.com/BloodHoundAD/SharpHound",
+                "PowerSploit|A PowerShell Post-Exploitation Framework.|https://github.com/PowerShellMafia/PowerSploit",
+                "Seatbelt|A C# project that performs a number of safety checks.|https://github.com/GhostPack/Seatbelt",
+                "Process Hacker|A free, powerful, multi-purpose tool that helps you monitor system resources.|https://processhacker.sourceforge.io/",
+                "Commando VM|Automated Windows Penetration Testing Distribution.|https://github.com/mandiant/commando-vm",
+                "Flare VM|Windows-based security distribution for malware analysis.|https://github.com/mandiant/flare-vm",
+                "WMI Implants|PowerShell script to run commands via WMI.|https://github.com/FortyNorthSecurity/WMI_Implants",
+                "PowerView|PowerShell tool to gain network situational awareness on Windows domains.|https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+                "Inveigh|Windows PowerShell LLMNR/mDNS/NBNS spoofer/man-in-the-middle tool.|https://github.com/Kevin-Robertson/Inveigh",
+                "Empire|PowerShell and Python post-exploitation agent.|https://github.com/BC-SECURITY/Empire",
+                "Covenant|.NET Command and Control framework.|https://github.com/cobbr/Covenant",
+                "StarKiller|Frontend for Empire.|https://github.com/BC-SECURITY/Starkiller",
+                "SharpUp|C# port of PowerUp to check for privilege escalation vulnerabilities.|https://github.com/GhostPack/SharpUp",
+                "SafetyKatz|Mimikatz with safety checks.|https://github.com/GhostPack/SafetyKatz",
+                "Snaffler|A tool for finding tasty credentials on Windows shares.|https://github.com/SnaffCon/Snaffler",
+                "WinPEAS|Windows Privilege Escalation Awesome Scripts.|https://github.com/peass-ng/PEASS-ng",
+                "ADExplorer|Active Directory Explorer viewer and editor.|https://docs.microsoft.com/en-us/sysinternals/downloads/adexplorer",
+                "ProcDump|Command-line utility for monitoring an application for CPU spikes and generating crash dumps.|https://docs.microsoft.com/en-us/sysinternals/downloads/procdump",
+                "TCPView|Windows program that will show you detailed listings of all TCP and UDP endpoints.|https://docs.microsoft.com/en-us/sysinternals/downloads/tcpview",
+                "Autoruns|Shows what programs are configured to run during system bootup or login.|https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns",
+                "dnSpy|Debugger and .NET assembly editor.|https://github.com/dnSpy/dnSpy",
+                "ILSpy|Open-source .NET assembly browser and decompiler.|https://github.com/icsharpcode/ILSpy",
+                "DotPeek|Free .NET Decompiler and Assembly Browser.|https://www.jetbrains.com/decompiler/",
+                "x64dbg|Open source x64/x32 debugger for windows.|https://x64dbg.com/",
+                "Immunity Debugger|A powerful new way to write exploits and analyze malware.|https://www.immunityinc.com/products/debugger/",
+                "Windbg|The multipurpose debugger for the Microsoft Windows computer operating system.|https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/",
+                "RegShot|Registry comparison tool.|https://sourceforge.net/projects/regshot/",
+                "Sandboxie|Runs programs in an isolated space.|https://sandboxie-plus.com/",
+                "Wireshark (Win)|Network protocol analyzer.|https://www.wireshark.org/",
+                "Fiddler|Web debugging proxy.|https://www.telerik.com/fiddler",
+                "Nmap (Win)|Network scanner.|https://nmap.org/download.html",
+                "Putty|SSH and telnet client.|https://www.putty.org/",
+                "MobaXterm|Enhanced terminal for Windows with X11 server, tabbed SSH client.|https://mobaxterm.mobatek.net/",
+                "Cmder|Portable console emulator for Windows.|https://cmder.net/",
+                "WSL 2|Windows Subsystem for Linux.|https://docs.microsoft.com/en-us/windows/wsl/install",
+                "Chocolatey|Package manager for Windows.|https://chocolatey.org/"
+            ],
+            "Linux / Server / Systems": [
+                "Lynis|Security auditing tool for Unix/Linux systems.|https://cisofy.com/lynis/",
+                "Fail2Ban|Scans log files and bans IPs that show malicious signs.|https://www.fail2ban.org/",
+                "Auditd|The Linux Audit Daemon.|https://linux.die.net/man/8/auditd",
+                "SELinux|Security Enhanced Linux.|https://github.com/SELinuxProject",
+                "AppArmor|Linux kernel security module that allows the system administrator to restrict programs' capabilities.|https://gitlab.com/apparmor",
+                "Chkrootkit|Locally checks for signs of a rootkit.|http://www.chkrootkit.org/",
+                "Rkhunter|Rootkit Hunter scans for rootkits, backdoors and local exploits.|http://rkhunter.sourceforge.net/",
+                "ClamAV|Open source antivirus engine.|https://www.clamav.net/",
+                "LMD (Linux Malware Detect)|Malware scanner for Linux.|https://www.rfxn.com/projects/linux-malware-detect/",
+                "OSSEC|Host-based Intrusion Detection System.|https://www.ossec.net/",
+                "Wazuh|The Open Source Security Platform.|https://wazuh.com/",
+                "Snort|Network Intrusion Detection & Prevention System.|https://www.snort.org/",
+                "Suricata|High performance Network IDS, IPS and Network Security Monitoring engine.|https://suricata.io/",
+                "Zeek|Network Security Monitor.|https://zeek.org/",
+                "ModSecurity|Open Source Web Application Firewall.|https://modsecurity.org/",
+                "UFW|Uncomplicated Firewall.|https://wiki.ubuntu.com/UncomplicatedFirewall",
+                "IPTables|Administration tool for IPv4 packet filtering and NAT.|https://www.netfilter.org/",
+                "NFTables|Successor to iptables.|https://netfilter.org/projects/nftables/",
+                "Logwatch|Log analysis and reporting.|https://sourceforge.net/projects/logwatch/",
+                "GoAccess|Real-time web log analyzer and interactive viewer.|https://goaccess.io/",
+                "Webmin|Web-based system administration interface.|https://www.webmin.com/",
+                "Cockpit|Web-based server interface.|https://cockpit-project.org/",
+                "Tiger|Security auditing and intrusion detection tool.|https://www.nongnu.org/tiger/",
+                "Bastille Linux|System hardening program.|http://bastille-linux.sourceforge.net/",
+                "OpenSSH|Connectivity tool for remote login with SSH protocol.|https://www.openssh.com/",
+                "Mosh|Mobile Shell, allows roaming and intermittent connectivity.|https://mosh.org/",
+                "Tmux|Terminal multiplexer.|https://github.com/tmux/tmux",
+                "Screen|Full-screen window manager.|https://www.gnu.org/software/screen/",
+                "HTop|Interactive process viewer.|https://htop.dev/",
+                "Glances|Cross-platform system monitoring tool.|https://nicolargo.github.io/glances/",
+                "Netdata|Real-time performance monitoring.|https://www.netdata.cloud/",
+                "Nagios|IT infrastructure monitoring.|https://www.nagios.org/",
+                "Zabbix|Enterprise-class monitoring solution.|https://www.zabbix.com/",
+                "Prometheus|Monitoring system and time series database.|https://prometheus.io/",
+                "Grafana|Observability and data visualization.|https://grafana.com/",
+                "Ansible|IT automation.|https://www.ansible.com/",
+                "Puppet|Infrastructure automation.|https://puppet.com/",
+                "Chef|Infrastructure automation.|https://www.chef.io/",
+                "Terraform|Infrastructure as code.|https://www.terraform.io/",
+                "Docker|Container platform.|https://www.docker.com/",
+                "Kubernetes|Container orchestration.|https://kubernetes.io/"
+            ],
+            "Mobile (Android & iOS)": [
+                "MobSF|Mobile Security Framework (MobSF) is an automated pen-testing framework.|https://github.com/MobSF/Mobile-Security-Framework-MobSF",
+                "Frida|Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers.|https://frida.re/",
+                "Objection|Runtime mobile exploration toolkit, powered by Frida.|https://github.com/sensepost/objection",
+                "Drozer|Comprehensive security assessment framework for Android.|https://labs.withsecure.com/tools/drozer",
+                "AndroBugs|Android vulnerability scanner that checks for potential security vulnerabilities.|https://github.com/AndroBugs/AndroBugs_Framework",
+                "QARK|Quick Android Review Kit.|https://github.com/linkedin/qark",
+                "APKTool|A tool for reverse engineering 3rd party, closed, binary Android apps.|https://ibotpeaches.github.io/Apktool/",
+                "Dex2Jar|Tools to work with android .dex and java .class files.|https://github.com/pxb1988/dex2jar",
+                "JADX|Dex to Java decompiler.|https://github.com/skylot/jadx",
+                "Bytecode Viewer|A Java 8+ Jar & Android APK Reverse Engineering Suite.|https://github.com/Konloch/bytecode-viewer",
+                "Radare2|Unix-like reverse engineering framework.|https://rada.re/n/",
+                "Ghidra|Software reverse engineering (SRE) suite.|https://ghidra-sre.org/",
+                "ADB (Android Debug Bridge)|Versatile command-line tool for communicating with a device.|https://developer.android.com/studio/command-line/adb",
+                "Scrcpy|Display and control your Android device.|https://github.com/Genymobile/scrcpy",
+                "Pidcat|Colored logcat script which only shows log entries for a specific application package.|https://github.com/JakeWharton/pidcat",
+                "Checkra1n|Jailbreak for iPhone 5s through iPhone X.|https://checkra.in/",
+                "Cydia Impactor|GUI tool for working with mobile devices.|http://www.cydiaimpactor.com/",
+                "Needle|The iOS Security Assessment Framework.|https://github.com/FSecureLABS/needle",
+                "Idb|iOS Research & Exploration Tool.|https://github.com/facebook/idb",
+                "Plists|Command line tool to parse plist files.|https://linux.die.net/man/1/plist",
+                "Class-dump|Generate Objective-C headers from Mach-O files.|http://stevenygard.com/projects/class-dump/",
+                "Cycript|Allows developers to explore and modify running applications on iOS.|http://www.cycript.org/",
+                "Passionfruit|Simple iOS app blackbox assessment tool.|https://github.com/chaitin/passionfruit",
+                "Grapefruit|Runtime Application Instruments for iOS.|https://github.com/ChiChou/Grapefruit",
+                "House|A runtime mobile application analysis toolkit.|https://github.com/WithSecureLabs/house",
+                "Fridump|A universal memory dumper using Frida.|https://github.com/Nightbringer21/fridump",
+                "AppMon|Automated framework for monitoring and tampering system API calls.|https://github.com/dpnishant/appmon",
+                "Inspeckage|Android Package Inspector.|https://github.com/ac-pm/Inspeckage",
+                "Xposed Framework|A framework for modules that can change the behavior of the system and apps.|https://repo.xposed.info/",
+                "Magisk|The Magic Mask for Android.|https://github.com/topjohnwu/Magisk",
+                "Burp Suite Mobile Assistant|Tool to facilitate testing of iOS apps.|https://portswigger.net/burp/documentation/desktop/tools/mobile-assistant",
+                "SSL Pinning Bypass Scripts|Collection of Frida scripts to bypass SSL pinning.|https://codeshare.frida.re/",
+                "DVIA|Damn Vulnerable iOS App.|https://github.com/prateek147/DVIA-v2",
+                "DIVA|Damn Insecure and Vulnerable App for Android.|https://github.com/payatu/diva-android",
+                "GoatDroid|Android app with intentional vulnerabilities.|https://github.com/jackMannino/OWASP-GoatDroid-Project"
+            ],
+            "MacOS & iOS Specific": [
+                "Little Snitch|Application firewall for macOS.|https://www.obdev.at/products/littlesnitch/index.html",
+                "LuLu|Free, open-source macOS firewall.|https://objective-see.com/products/lulu.html",
+                "KnockKnock|Uncover persistently installed software.|https://objective-see.com/products/knockknock.html",
+                "BlockBlock|Monitors common persistence locations.|https://objective-see.com/products/blockblock.html",
+                "Oversight|Monitor mic and webcam usage.|https://objective-see.com/products/oversight.html",
+                "RansomWhere?|Generic ransomware detection.|https://objective-see.com/products/ransomwhere.html",
+                "ReiKey|Keyboard event taps detection.|https://objective-see.com/products/reikey.html",
+                "TaskExplorer|Explore all the tasks running on your Mac.|https://objective-see.com/products/taskexplorer.html",
+                "XCode|Integrated development environment for macOS.|https://developer.apple.com/xcode/",
+                "Hopper Disassembler|Reverse engineering tool for macOS and Linux.|https://www.hopperapp.com/",
+                "Charles Proxy|HTTP proxy / HTTP monitor / Reverse Proxy.|https://www.charlesproxy.com/",
+                "Gas Mask|Hosts file manager for macOS.|https://github.com/2ndalpha/gasmask",
+                "iStumbler|Wireless discovery tool for macOS.|https://istumbler.net/",
+                "WiFi Explorer|Scan, monitor, and troubleshoot wireless networks.|https://www.intuitibits.com/products/wifiexplorer/",
+                "Suspicious Package|An app for inspecting macOS installer packages.|https://www.mothersruin.com/software/SuspiciousPackage/",
+                "Pacifist|Opens macOS .pkg files, .dmg disk images, and .zip archives.|https://www.charlessoft.com/",
+                "The Unarchiver|Unarchive many different kinds of archive files.|https://theunarchiver.com/",
+                "Keka|macOS file archiver.|https://www.keka.io/",
+                "Homebrew|The Missing Package Manager for macOS.|https://brew.sh/",
+                "iTerm2|A replacement for Terminal and the successor to iTerm.|https://iterm2.com/",
+                "Alfred|Productivity app for macOS.|https://www.alfredapp.com/",
+                "Rectangle|Window management app.|https://rectangleapp.com/",
+                "Do Not Disturb|Laptop lid open/close monitor.|https://objective-see.com/products/dnd.html",
+                "Netiquette|Network monitor.|https://objective-see.com/products/netiquette.html",
+                "What's Your Sign?|Adds a menu item to display cryptographic signing information.|https://objective-see.com/products/whatsyoursign.html",
+                "Fnd|Finds files.|https://github.com/conradkleinespel/fnd",
+                "Mas|Mac App Store command line interface.|https://github.com/mas-cli/mas",
+                "SwiftDefaultApps|Preference pane to set default apps.|https://github.com/Lord-Kamina/SwiftDefaultApps",
+                "AppCleaner|Uninstalls apps completely.|https://freemacsoft.net/appcleaner/",
+                "OnyX|Multifunction utility.|https://www.titanium-software.fr/en/onyx.html",
+                "Disk Drill|Data recovery software.|https://www.cleverfiles.com/",
+                "Carbon Copy Cloner|Backup tool.|https://bombich.com/",
+                "SuperDuper!|Backup and cloning tool.|https://www.shirt-pocket.com/SuperDuper/SuperDuperDescription.html",
+                "DaisyDisk|Disk usage visualizer.|https://daisydiskapp.com/",
+                "GrandPerspective|Disk usage visualizer.|http://grandperspectiv.sourceforge.net/"
+            ],
+            "Cloud Security (AWS/Azure/GCP)": [
+                "ScoutSuite|Multi-cloud security-auditing tool.|https://github.com/nccgroup/ScoutSuite",
+                "Prowler|AWS security best practices assessment, auditing, hardening and forensics readiness tool.|https://github.com/prowler-cloud/prowler",
+                "CloudSploit|Cloud security posture management (CSPM).|https://github.com/aquasecurity/cloudsploit",
+                "Pacu|The AWS exploitation framework.|https://github.com/RhinoSecurityLabs/pacu",
+                "CloudMapper|Helps you analyze your AWS environments.|https://github.com/duo-labs/cloudmapper",
+                "AWSBucketDump|Security tool to look for interesting files in S3 buckets.|https://github.com/jordanpotti/AWSBucketDump",
+                "S3Scanner|Scan for open S3 buckets and dump the contents.|https://github.com/sa7mon/S3Scanner",
+                "G-Scout|Tool to audit Google Cloud Platform (GCP) environment.|https://github.com/nccgroup/G-Scout",
+                "Azucar|Security auditing tool for Azure resources.|https://github.com/Hzzone/Azucar",
+                "MicroBurst|PowerShell scripts for Azure security assessments.|https://github.com/NetSPI/MicroBurst",
+                "CloudJack|Route53/CloudFront Vulnerability Assessment Utility.|https://github.com/prevade/cloudjack",
+                "Enumerate-IAM|Brute force AWS IAM permissions.|https://github.com/andresriancho/enumerate-iam",
+                "WeirdAAL|AWS Attack Library.|https://github.com/carnal0wnage/weirdAAL",
+                "Nimbostratus|Tools for fingerprinting and exploiting Amazon cloud infrastructure.|https://github.com/andresriancho/nimbostratus",
+                "CloudCustodian|Rules engine for cloud account management.|https://cloudcustodian.io/",
+                "Checkov|Static code analysis tool for infrastructure-as-code.|https://www.checkov.io/",
+                "Terrascan|Detect compliance and security violations across Infrastructure as Code.|https://github.com/tenable/terrascan",
+                "KICS|Keep Infrastructure as Code Secure.|https://kics.io/",
+                "Trivy|Vulnerability scanner for containers and other artifacts.|https://github.com/aquasecurity/trivy",
+                "Dockle|Container image linter.|https://github.com/goodwithtech/dockle",
+                "Clair|Vulnerability Static Analysis for Containers.|https://github.com/quay/clair",
+                "Grype|A vulnerability scanner for container images and filesystems.|https://github.com/anchore/grype",
+                "Syft|CLI tool and library for generating a Software Bill of Materials (SBOM).|https://github.com/anchore/syft",
+                "Kube-bench|Checks whether Kubernetes is deployed securely.|https://github.com/aquasecurity/kube-bench",
+                "Kube-hunter|Hunt for security weaknesses in Kubernetes clusters.|https://github.com/aquasecurity/kube-hunter",
+                "Falco|Cloud Native Runtime Security.|https://falco.org/",
+                "Peirates|Kubernetes Penetration Testing tool.|https://github.com/inguardians/peirates",
+                "Krane|Kubernetes RBAC Analysis tool.|https://github.com/appvia/krane",
+                "Rakkess|Review Access - kubectl plugin to show an access matrix.|https://github.com/corneliusweig/rakkess",
+                "Popeye|A Kubernetes cluster sanitizer.|https://github.com/derailed/popeye",
+                "Polaris|Validation of best practices in your Kubernetes clusters.|https://github.com/FairwindsOps/polaris",
+                "Goldilocks|Get your resource requests 'Just Right'.|https://github.com/FairwindsOps/goldilocks",
+                "K9s|Kubernetes CLI To Manage Your Clusters In Style.|https://k9scli.io/",
+                "Lens|The Kubernetes IDE.|https://k8slens.dev/",
+                "Helm|The package manager for Kubernetes.|https://helm.sh/"
+            ],
+            "WiFi / Radio / Hardware": [
+                "Aircrack-ng|WiFi security suite.|https://www.aircrack-ng.org/",
+                "Kismet|Wireless network detector, sniffer, and intrusion detection system.|https://www.kismetwireless.net/",
+                "Wifite2|Automated wireless attack tool.|https://github.com/derv82/wifite2",
+                "Fern Wifi Cracker|Wireless attack GUI.|https://github.com/savio-code/fern-wifi-cracker",
+                "EAPHammer|Targeted evil twin attacks against WPA2-Enterprise networks.|https://github.com/s0lst1c3/eaphammer",
+                "Fluxion|Social engineering based WPA/WPA2 attack.|https://github.com/FluxionNetwork/fluxion",
+                "Airgeddon|Multi-use bash script for Linux systems to audit wireless networks.|https://github.com/v1s1t0r1sh3r3/airgeddon",
+                "WiGLE|Wireless geographic logging engine.|https://wigle.net/",
+                "Cowpatty|Brute-force dictionary attack against WPA-PSK.|https://tools.kali.org/wireless-attacks/cowpatty",
+                "Pyrit|GPU accelerated WPA-PSK cracker.|https://github.com/JPaulMora/Pyrit",
+                "Reaver|Brute force attack against Wifi Protected Setup (WPS).|https://code.google.com/archive/p/reaver-wps/",
+                "Bully|Brute force attack against WPS.|https://github.com/aanarchyy/bully",
+                "PixieWPS|WPS pixie dust attack tool.|https://github.com/wiire/pixiewps",
+                "Wifiphisher|Automated phishing attacks against WiFi networks.|https://github.com/wifiphisher/wifiphisher",
+                "BlueZ|Official Linux Bluetooth protocol stack.|http://www.bluez.org/",
+                "Ubertooth|Open source 2.4 GHz wireless development platform for Bluetooth monitoring.|https://github.com/greatscottgadgets/ubertooth",
+                "BlueMaho|Bluetooth scanner and audit tool.|https://github.com/zenware/bluemaho",
+                "Redfang|Bluetooth brute force tool.|https://gitlab.com/kalilinux/packages/redfang",
+                "Spoor|Bluetooth scanner.|https://github.com/s0lst1c3/spoor",
+                "Btscanner|Bluetooth scanner.|https://github.com/pentestgeeks/btscanner",
+                "Gqrx|Software defined radio receiver.|https://gqrx.dk/",
+                "GnuRadio|Signal processing toolkit.|https://www.gnuradio.org/",
+                "RTL-SDR|Software Defined Radio.|https://www.rtl-sdr.com/",
+                "HackRF|SDR Platform.|https://greatscottgadgets.com/hackrf/",
+                "Proxmark3|RFID tool.|https://github.com/Proxmark/proxmark3",
+                "ChameleonMini|NFC emulator.|https://github.com/emsec/ChameleonMini",
+                "HydraNFC|NFC tool.|https://github.com/hydrabus/hydranfc",
+                "Attify Badge|IoT hardware tool.|https://github.com/attify/attify-badge",
+                "Bus Pirate|Universal bus interface.|http://dangerousprototypes.com/docs/Bus_Pirate",
+                "Shikra|JTAG/UART tool.|https://int3.cc/products/shikra",
+                "Jtagulator|JTAG discovery.|http://www.grandideastudio.com/jtagulator/",
+                "OpenOCD|On-Chip Debugger.|http://openocd.org/",
+                "Flashrom|Flash programming.|https://www.flashrom.org/",
+                "Binwalk|Firmware analysis.|https://github.com/ReFirmLabs/binwalk",
+                "Firmwalker|Firmware analyzer.|https://github.com/craigz28/firmwalker",
+                "Fact|Firmware analysis comparison tool.|https://github.com/fkie-cad/FACT_core",
+                "Routersploit|Exploitation framework for embedded devices.|https://github.com/threat9/routersploit",
+                "KillerBee|ZigBee exploitation framework.|https://github.com/riverloopsec/killerbee",
+                "Attify ZigBee|ZigBee framework.|https://github.com/attify/zigbee-framework",
+                "Bettercap|The Swiss Army knife for WiFi, Bluetooth Low Energy, wireless HID hijacking and Ethernet networks.|https://www.bettercap.org/"
+            ],
+            "Web Application Hacking": [
+                "Burp Suite|An integrated platform for performing security testing of web applications.|https://portswigger.net/burp",
+                "OWASP ZAP|The Zed Attack Proxy is an easy to use integrated penetration testing tool for finding vulnerabilities in web applications.|https://www.zaproxy.org/",
+                "SQLMap|Automatic SQL injection and database takeover tool.|https://sqlmap.org/",
+                "Nikto|Web server scanner.|https://cirt.net/Nikto2",
+                "Wapiti|Web application vulnerability scanner.|https://wapiti.sourceforge.io/",
+                "Arachni|Web application security scanner framework.|https://github.com/Arachni/arachni",
+                "Wpscan|WordPress security scanner.|https://wpscan.com/",
+                "JoomScan|Joomla vulnerability scanner.|https://github.com/rezasp/joomscan",
+                "DrupalScan|Drupal scanner.|https://github.com/rverton/DrupalScan",
+                "Commix|Automated All-in-One OS Command Injection and Exploitation Tool.|https://github.com/commixproject/commix",
+                "XSSer|Cross Site Scripting framework.|https://github.com/xsser/xsser",
+                "XSStrike|Advanced XSS detection suite.|https://github.com/s0md3v/XSStrike",
+                "Dalfox|Parameter Analysis and XSS Scanning tool.|https://github.com/hahwul/dalfox",
+                "NoSQLMap|Automated NoSQL database enumeration and web application exploitation tool.|https://github.com/codingo/NoSQLMap",
+                "Havij|Automated SQL Injection tool.|https://sourceforge.net/projects/havij-advanced-sql-injection/",
+                "Gobuster|Directory/File, DNS and VHost busting tool written in Go.|https://github.com/OJ/gobuster",
+                "Dirb|Web Content Scanner.|https://tools.kali.org/web-applications/dirb",
+                "Dirbuster|GUI Directory busting tool.|https://tools.kali.org/web-applications/dirbuster",
+                "Feroxbuster|Fast, simple, recursive content discovery tool.|https://github.com/epi052/feroxbuster",
+                "Ffuf|Fast web fuzzer written in Go.|https://github.com/ffuf/ffuf",
+                "Wfuzz|Web application fuzzer.|https://github.com/xmendez/wfuzz",
+                "WhatWeb|Next generation web scanner.|https://github.com/urbanadventurer/WhatWeb",
+                "Wappalyzer|Technology profiler.|https://www.wappalyzer.com/",
+                "BuiltWith|Web technology profiler.|https://builtwith.com/",
+                "Acunetix|Automated web application security scanner.|https://www.acunetix.com/",
+                "Netsparker|Web application security scanner.|https://www.netsparker.com/",
+                "Hackbar|Firefox addon for pentesting.|https://addons.mozilla.org/en-US/firefox/addon/hackbar/",
+                "Postman|API development environment.|https://www.postman.com/",
+                "SoapUI|API testing tool.|https://www.soapui.org/",
+                "Jwt_tool|Toolkit for testing, tweaking and cracking JSON Web Tokens.|https://github.com/ticarpi/jwt_tool",
+                "Ghauri|An advanced SQL injection tool.|https://github.com/r0oth3x49/ghauri",
+                "Katana|A next-generation crawling and spidering framework.|https://github.com/projectdiscovery/katana",
+                "Subfinder|Subdomain discovery tool.|https://github.com/projectdiscovery/subfinder",
+                "Httpx|Fast and multi-purpose HTTP toolkit.|https://github.com/projectdiscovery/httpx"
+            ],
+            "Network Infrastructure": [
+                "Nmap|The de facto standard for network discovery and security auditing.|https://nmap.org/",
+                "Masscan|Internet-scale port scanner.|https://github.com/robertdavidgraham/masscan",
+                "RustScan|Fast port scanner.|https://github.com/RustScan/RustScan",
+                "Zmap|Single packet network scanner.|https://zmap.io/",
+                "Angry IP Scanner|Cross-platform IP scanner.|https://angryip.org/",
+                "Netcat|The TCP/IP Swiss Army Knife.|https://nmap.org/ncat/",
+                "Socat|Multipurpose relay tool.|http://www.dest-unreach.org/socat/",
+                "Hping3|Packet generator and analyzer.|https://github.com/antirez/hping",
+                "Unicornscan|Asynchronous port scanner.|https://sourceforge.net/projects/unicornscan/",
+                "OpenVAS|Full-featured vulnerability scanner.|https://www.openvas.org/",
+                "Nessus|Industry standard vulnerability scanner.|https://www.tenable.com/products/nessus",
+                "Nexpose|Vulnerability management software.|https://www.rapid7.com/products/nexpose/",
+                "GVM|Greenbone Vulnerability Management.|https://www.greenbone.net/en/",
+                "Wireshark|Network protocol analyzer.|https://www.wireshark.org/",
+                "Tcpdump|CLI packet analyzer.|https://www.tcpdump.org/",
+                "Tshark|Terminal-based Wireshark.|https://www.wireshark.org/docs/man-pages/tshark.html",
+                "Bettercap|The Swiss Army knife for WiFi/BLE/Net.|https://www.bettercap.org/",
+                "Ettercap|Man in the middle attacks.|https://www.ettercap-project.org/",
+                "Mitmproxy|Interactive HTTPS proxy.|https://mitmproxy.org/",
+                "Yersinia|Network attacks framework.|https://github.com/tomac/yersinia",
+                "Loki|IOC scanner.|https://github.com/Neo23x0/Loki",
+                "Scapy|Packet manipulation program.|https://scapy.net/",
+                "Ike-scan|VPN scanner.|https://github.com/royhills/ike-scan",
+                "Nbtscan|NetBIOS name server scanner.|https://github.com/resurrecting-open-source-projects/nbtscan",
+                "Enum4linux|Samba enumeration tool.|https://github.com/CiscoCXSecurity/enum4linux",
+                "Smbclient|SMB/CIFS client.|https://www.samba.org/",
+                "Rpcclient|Tool for executing RPC functions.|https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html",
+                "Snmpwalk|Retrieve a subtree of management values.|https://linux.die.net/man/1/snmpwalk",
+                "Onesixtyone|Fast SNMP scanner.|https://github.com/trailofbits/onesixtyone",
+                "Braa|Mass SNMP scanner.|https://github.com/mteg/braa",
+                "CrackMapExec|A swiss army knife for pentesting networks.|https://github.com/Porchetta-Industries/CrackMapExec",
+                "Impacket|Collection of Python classes for working with network protocols.|https://github.com/fortra/impacket",
+                "Responder|A LLMNR, NBT-NS and MDNS poisoner.|https://github.com/lgandx/Responder",
+                "NetDiscover|Network address discovering tool.|https://github.com/netdiscover-scanner/netdiscover",
+                "Dnsenum|DNS enumeration tool.|https://github.com/fwaeytens/dnsenum",
+                "Dnsrecon|DNS reconnaissance script.|https://github.com/darkoperator/dnsrecon",
+                "Fierce|DNS reconnaissance tool.|https://github.com/ucezo/fierce"
+            ],
+            "OSINT & Recon": [
+                "Maltego|Interactive data mining and link analysis.|https://www.maltego.com/",
+                "Shodan|Search engine for Internet-connected devices.|https://www.shodan.io/",
+                "TheHarvester|Email, subdomain and people harvesting.|https://github.com/laramies/theHarvester",
+                "Recon-ng|Web reconnaissance framework.|https://github.com/lanmaster53/recon-ng",
+                "SpiderFoot|OSINT automation tool.|https://github.com/smicallef/spiderfoot",
+                "Amass|In-depth DNS enumeration and mapping.|https://github.com/OWASP/Amass",
+                "Sublist3r|Fast subdomains enumeration.|https://github.com/aboul3la/Sublist3r",
+                "Photon|Incredibly fast crawler for OSINT.|https://github.com/s0md3v/Photon",
+                "Assetfinder|Find domains and subdomains related to a target.|https://github.com/tomnomnom/assetfinder",
+                "Waybackurls|Fetch all URLs from Wayback Machine.|https://github.com/tomnomnom/waybackurls",
+                "Censys|Attack Surface Management.|https://censys.io/",
+                "Hunter.io|Email finder and verifier.|https://hunter.io/",
+                "Google Dorks|Advanced search queries.|https://www.exploit-db.com/google-hacking-database",
+                "Crt.sh|Certificate transparency search.|https://crt.sh/",
+                "Netcraft|Internet data mining.|https://www.netcraft.com/",
+                "Whois|Domain registration info.|https://linux.die.net/man/1/whois",
+                "Dig|DNS lookup utility.|https://linux.die.net/man/1/dig",
+                "Nslookup|Query Internet name servers.|https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup",
+                "Osintgram|Instagram OSINT tool.|https://github.com/Datalux/Osintgram",
+                "Sherlock|Find usernames across social networks.|https://github.com/sherlock-project/sherlock",
+                "Social-Searcher|Social media search engine.|https://www.social-searcher.com/",
+                "TinEye|Reverse image search.|https://tineye.com/",
+                "ExifTool|Read and write meta information in files.|https://exiftool.org/",
+                "Metadata++|Metadata viewer/editor.|https://metadata-plus-plus.en.softonic.com/",
+                "FOCA|Metadata analysis tool.|https://github.com/ElevenPaths/FOCA",
+                "Metagoofil|Metadata harvester.|https://github.com/laramies/metagoofil",
+                "Searchcode|Source code search engine.|https://searchcode.com/",
+                "GreyNoise|Internet background noise analysis.|https://www.greynoise.io/",
+                "Hunchly|OSINT investigation capture tool.|https://www.hunchly.com/",
+                "PhoneInfoga|Phone number OSINT.|https://github.com/sundowndev/phoneinfoga",
+                "SimplyEmail|Email recon.|https://github.com/SimplySecurity/SimplyEmail",
+                "TruffleHog|Search for secrets in git repos.|https://github.com/trufflesecurity/trufflehog",
+                "GitRob|Reconnaissance tool for GitHub organizations.|https://github.com/michenriksen/gitrob",
+                "Gitleaks|Scan git repos (or files) for secrets.|https://github.com/gitleaks/gitleaks",
+                "UrlScan.io|A sandbox for the web.|https://urlscan.io/"
+            ],
+            "Social Engineering": [
+                "SET|Social Engineering Toolkit.|https://github.com/trustedsec/social-engineer-toolkit",
+                "Gophish|Phishing framework.|https://getgophish.com/",
+                "King Phisher|Phishing campaign toolkit.|https://github.com/rsmusllp/king-phisher",
+                "Evilginx2|Standalone man-in-the-middle attack framework.|https://github.com/kgretzky/evilginx2",
+                "BeEF|Browser Exploitation Framework.|https://beefproject.com/",
+                "Wifiphisher|Automated phishing attacks against WiFi networks.|https://github.com/wifiphisher/wifiphisher",
+                "SocialFish|Phishing Tool.|https://github.com/UndeadSec/SocialFish",
+                "HiddenEye|Modern Phishing Tool.|https://github.com/DarkSecDevelopers/HiddenEye",
+                "ShellPhish|Phishing Tool for Instagram, Twitter, Facebook, etc.|https://github.com/thelinuxchoice/shellphish",
+                "BlackEye|Phishing Tool.|https://github.com/An0nUD4Y/blackeye",
+                "Zphisher|Automated Phishing Tool.|https://github.com/htr-tech/zphisher",
+                "AdvPhishing|Phishing Tool.|https://github.com/Ignitetch/AdvPhishing",
+                "Nexphisher|Advanced Phishing Tool.|https://github.com/htr-tech/nexphisher",
+                "Lockphish|Lock Screen Phishing Tool.|https://github.com/KaliLinux-NetHunter/lockphish",
+                "Seeker|Locate smartphones using social engineering.|https://github.com/thewhiteh4t/seeker",
+                "Trape|People tracker on the Internet.|https://github.com/jofpin/trape",
+                "SpoofCheck|Checks if a domain can be spoofed.|https://github.com/BishopFox/spoofcheck",
+                "Swaks|Swiss Army Knife for SMTP.|https://github.com/jetmore/swaks",
+                "SendEmail|Lightweight, command line SMTP email client.|https://github.com/mogaal/sendemail",
+                "Phishery|An SSL Enabled Basic Auth Credential Harvester.|https://github.com/ryhanson/phishery",
+                "ReelPhish|Real-time Two-Factor Phishing Tool.|https://github.com/fireeye/ReelPhish",
+                "CredSniper|Phishing Framework.|https://github.com/ustayready/CredSniper",
+                "Domain Hunter|Checks expired domains for reputation.|https://github.com/threatexpress/domainhunter",
+                "FiercePhish|Full-fledged phishing framework.|https://github.com/Raikia/FiercePhish",
+                "Phishing Frenzy|Ruby on Rails Phishing Framework.|https://github.com/pentestgeek/phishing-frenzy",
+                "Modlishka|Reverse Proxy for Phishing.|https://github.com/drk1wi/Modlishka",
+                "Muraena|Automated Reverse Proxy Phishing.|https://github.com/muraenateam/muraena",
+                "Necrobrowser|Browser instrumentation for social engineering.|https://github.com/muraenateam/necrobrowser",
+                "Chameleon|Phishing Page Customizer.|https://github.com/lorg/chameleon",
+                "Catphish|Phishing detection and generation.|https://github.com/ring0lab/catphish"
+            ],
+            "Cryptography & Passwords": [
+                "John the Ripper|Fast password cracker.|https://www.openwall.com/john/",
+                "Hashcat|World's fastest and most advanced password recovery utility.|https://hashcat.net/hashcat/",
+                "Cain & Abel|Password recovery tool for Microsoft Windows.|http://www.oxid.it/cain.html",
+                "Ophcrack|Windows password cracker based on rainbow tables.|https://ophcrack.sourceforge.io/",
+                "RainbowCrack|Hash cracker based on rainbow tables.|http://project-rainbowcrack.com/",
+                "L0phtCrack|Password auditing and recovery.|https://www.l0phtcrack.com/",
+                "AirCrack-ng|WiFi key cracker.|https://www.aircrack-ng.org/",
+                "HashIdentifier|Software to identify the different types of hashes.|https://github.com/psypanda/hashID",
+                "HashID|Software to identify the different types of hashes.|https://github.com/psypanda/hashID",
+                "Cewl|Custom wordlist generator.|https://digi.ninja/projects/cewl.php",
+                "Crunch|Wordlist generator.|https://sourceforge.net/projects/crunch-wordlist/",
+                "Cupp|Common User Passwords Profiler.|https://github.com/Mebus/cupp",
+                "RSMangler|Keyword mangling.|https://github.com/digininja/RSMangler",
+                "Hydra|A very fast network logon cracker.|https://github.com/vanhauser-thc/thc-hydra",
+                "Medusa|Speedy, parallel, and modular, login brute-forcer.|https://github.com/jmk-foofus/medusa",
+                "Ncrack|Network authentication cracking tool.|https://nmap.org/ncrack/",
+                "Patator|Multi-purpose brute-forcer.|https://github.com/lanjelot/patator",
+                "Crowbar|Brute forcing tool.|https://github.com/hatlord/Crowbar",
+                "Kerbrute|A tool to perform Kerberos pre-auth bruteforcing.|https://github.com/ropnop/kerbrute",
+                "SprayingToolkit|Scripts to make password spraying attacks much easier.|https://github.com/byt3bl33d3r/SprayingToolkit",
+                "Rulengine|Rule engine for hashcat.|https://github.com/cfreal/rulengine",
+                "Hob0Rules|Password cracking rules for Hashcat.|https://github.com/praetorian-inc/Hob0Rules",
+                "Mentalist|Wordlist generator.|https://github.com/sc0tfree/mentalist",
+                "Pipal|Password analyser.|https://github.com/digininja/pipal",
+                "Seclists|Security lists.|https://github.com/danielmiessler/SecLists",
+                "Rockyou|Famous wordlist.|https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt",
+                "SamDump2|Dump Windows hashes.|https://tools.kali.org/password-attacks/samdump2",
+                "Pwdump|Dump password hashes.|https://www.openwall.com/passwords/pwdump",
+                "CyberChef|The Cyber Swiss Army Knife.|https://gchq.github.io/CyberChef/",
+                "VeraCrypt|Free open source disk encryption software.|https://www.veracrypt.fr/en/Home.html",
+                "GPG|Gnu Privacy Guard.|https://gnupg.org/",
+                "OpenSSL|Cryptography toolkit.|https://www.openssl.org/",
+                "Kleopatra|Certificate Manager and Unified Crypto GUI.|https://www.kde.org/applications/utilities/kleopatra/",
+                "KeePassXC|Cross-Platform Password Manager.|https://keepassxc.org/"
+            ]
+        };
+
+        // --- APPLICATION LOGIC ---
+
+        const app = {
+            state: {
+                currentCat: "Windows Ecosystem",
+                search: "",
+                sort: "name",
+                tools: []
+            },
+
+            init() {
+                // Initialize Sidebar
+                const nav = document.getElementById('domain-list');
+                const categories = Object.keys(db);
+                
+                nav.innerHTML = categories.map(cat => `
+                    <button onclick="app.setCategory('${cat}')" 
+                        class="w-full text-left px-3 py-2 text-[10px] font-mono border-l-2 transition-all hover:bg-white/5
+                        ${this.state.currentCat === cat ? 'border-yellow text-yellow bg-yellow/5 shadow-[0_0_10px_rgba(252,238,10,0.2)]' : 'border-transparent text-gray-500'}">
+                        ${cat.toUpperCase()} <span class="float-right opacity-50">${db[cat].length}</span>
+                    </button>
+                `).join('');
+
+                this.setCategory(this.state.currentCat);
+                this.renderChart();
+
+                // Listeners
+                document.getElementById('search-input').addEventListener('input', (e) => this.handleSearch(e.target.value));
+                document.getElementById('mobile-search').addEventListener('input', (e) => this.handleSearch(e.target.value));
+                document.getElementById('sort-select').addEventListener('change', (e) => {
+                    this.state.sort = e.target.value;
+                    this.renderTools();
+                });
+            },
+
+            handleSearch(query) {
+                this.state.search = query.toLowerCase();
+                this.renderTools();
+            },
+
+            setCategory(cat) {
+                this.state.currentCat = cat;
+                document.getElementById('header-category').innerText = cat;
+                
+                // Refresh Navigation Active State
+                const buttons = document.getElementById('domain-list').children;
+                Array.from(buttons).forEach(btn => {
+                    if(btn.innerText.includes(cat.toUpperCase())) {
+                        btn.classList.add('border-yellow', 'text-yellow', 'bg-yellow/5', 'shadow-[0_0_10px_rgba(252,238,10,0.2)]');
+                        btn.classList.remove('border-transparent', 'text-gray-500');
+                    } else {
+                        btn.classList.remove('border-yellow', 'text-yellow', 'bg-yellow/5', 'shadow-[0_0_10px_rgba(252,238,10,0.2)]');
+                        btn.classList.add('border-transparent', 'text-gray-500');
+                    }
+                });
+
+                this.renderTools();
+            },
+
+            renderTools() {
+                const grid = document.getElementById('tool-grid');
+                let toolsToRender = [];
+
+                // 1. Flatten if "All" or Search is active across all, otherwise get current category
+                if (this.state.search.length > 0) {
+                     // Search across entire DB
+                     Object.keys(db).forEach(cat => {
+                        db[cat].forEach(t => toolsToRender.push({...this.parseTool(t), category: cat}));
+                     });
+                     toolsToRender = toolsToRender.filter(t => t.name.toLowerCase().includes(this.state.search) || t.desc.toLowerCase().includes(this.state.search));
+                } else {
+                    // Just current category
+                    toolsToRender = db[this.state.currentCat].map(t => ({...this.parseTool(t), category: this.state.currentCat}));
+                }
+
+                // 2. Sort
+                toolsToRender.sort((a, b) => {
+                    if (this.state.sort === 'name') return a.name.localeCompare(b.name);
+                    if (this.state.sort === 'category') return a.category.localeCompare(b.category);
+                    return 0;
+                });
+
+                // 3. Update Count
+                document.getElementById('tool-count').innerText = toolsToRender.length;
+
+                // 4. Render
+                if (toolsToRender.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full text-center p-10 text-gray-500 font-mono">NO_ASSETS_FOUND</div>`;
+                    return;
+                }
+
+                grid.innerHTML = toolsToRender.map(tool => `
+                    <div onclick="app.openDetail('${tool.name.replace(/'/g, "\\'")}')" class="tool-card p-4 cursor-pointer flex flex-col h-40">
+                        <div class="flex justify-between items-start mb-2">
+                             <span class="text-[9px] font-bold px-1 border border-gray-600 text-gray-400 uppercase tracking-tight">${tool.category.split(' ')[0]}</span>
+                             <div class="w-2 h-2 rounded-full bg-green shadow-[0_0_5px_#4af626]"></div>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-1 truncate font-sans">${tool.name}</h3>
+                        <p class="text-[11px] text-gray-400 font-mono leading-tight overflow-hidden text-ellipsis line-clamp-3">${tool.desc}</p>
+                        <div class="mt-auto pt-2 flex justify-end">
+                            <span class="text-yellow text-[10px] uppercase font-bold tracking-widest hover:underline">Inspect >></span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Store for detail lookup
+                this.state.tools = toolsToRender;
+            },
+
+            parseTool(str) {
+                const p = str.split('|');
+                return { name: p[0], desc: p[1], url: p[2] };
+            },
+
+            openDetail(name) {
+                // Find tool in current set or full db
+                let tool = this.state.tools.find(t => t.name === name);
+                
+                // Fallback search
+                if (!tool) {
+                    Object.values(db).flat().forEach(raw => {
+                        const p = this.parseTool(raw);
+                        if(p.name === name) tool = p;
+                    });
+                }
+
+                if(!tool) return;
+
+                document.getElementById('detail-title').innerText = tool.name;
+                document.getElementById('detail-desc').innerText = tool.desc;
+                document.getElementById('detail-mech').innerText = `Standard operational protocol for ${tool.name}. Executes high-level functions within the ${tool.category || 'System'} domain. Refer to documentation for CLI arguments and API endpoints.`;
+                document.getElementById('detail-link').href = tool.url;
+                
+                // Fake Tags
+                const tags = ["SEC_OPS", "RED_TEAM", "UTILITY", "V4.0", "IMMORTAL"];
+                document.getElementById('detail-tags').innerHTML = tags.map(t => `<span class="bg-gray-800 text-gray-400 px-2 py-1 text-[9px] border border-gray-700 font-mono">${t}</span>`).join('');
+
+                document.getElementById('detail-drawer').classList.remove('translate-x-full');
+            },
+
+            closeDetail() {
+                document.getElementById('detail-drawer').classList.add('translate-x-full');
+            },
+
+            reset() {
+                this.state.search = "";
+                document.getElementById('search-input').value = "";
+                document.getElementById('mobile-search').value = "";
+                this.setCategory("Windows Ecosystem");
+                this.closeDetail();
+            },
+
+            renderChart() {
+                const ctx = document.getElementById('distChart').getContext('2d');
+                const labels = Object.keys(db).map(k => k.split(' ')[0]); // Short labels
+                const data = Object.values(db).map(v => v.length);
+
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Arsenal Density',
+                            data: data,
+                            backgroundColor: 'rgba(252, 238, 10, 0.2)',
+                            borderColor: '#fcee0a',
+                            borderWidth: 1,
+                            pointBackgroundColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                                pointLabels: {
+                                    font: { family: 'JetBrains Mono', size: 8 },
+                                    color: '#777'
+                                },
+                                ticks: { display: false, backdropColor: 'transparent' }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => app.init());
+
+    </script>
+</body>
+</html>
